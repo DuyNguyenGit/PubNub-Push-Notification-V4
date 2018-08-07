@@ -1,19 +1,14 @@
 package com.smalam.pseudozero.pbpush;
 
 import android.app.IntentService;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
-
 import android.preference.PreferenceManager;
-
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-
 import com.orhanobut.logger.Logger;
-
 import com.pubnub.api.PNConfiguration;
 import com.pubnub.api.PubNub;
 import com.pubnub.api.callbacks.PNCallback;
@@ -54,7 +49,7 @@ public class FCMRegistrationIntentService extends IntentService {
         pnConfiguration.setSecure(false);
         mPubnub = new PubNub(pnConfiguration);
 
-        if(isReg) registerGCM();
+        if (isReg) registerGCM();
         else UnRegisterGCM();
 
     }
@@ -77,7 +72,7 @@ public class FCMRegistrationIntentService extends IntentService {
             editor.putString(Config.TOKEN, token);
             editor.commit();
 
-            EventBus.getDefault().post(new AppEvent("msg","token received"));
+            EventBus.getDefault().post(new AppEvent("msg", "token received"));
 
             //Displaying the token in the log
             Logger.d(token);
@@ -88,7 +83,7 @@ public class FCMRegistrationIntentService extends IntentService {
             //Putting the token to the intent
             registrationComplete.putExtra("token", token);
 
-            enablePushOnChannel(token,Config.CHANNEL_NAME);
+            enablePushOnChannel(token, Config.CHANNEL_NAME);
 
         } catch (Exception e) {
             //If any error occurred
@@ -118,7 +113,7 @@ public class FCMRegistrationIntentService extends IntentService {
             editor.putString(Config.TOKEN, "");
             editor.commit();
 
-            EventBus.getDefault().post(new AppEvent("msg","token removed"));
+            EventBus.getDefault().post(new AppEvent("msg", "token removed"));
 
             //on registration complete creating intent with success
             registrationComplete = new Intent(REGISTRATION_SUCCESS);
@@ -134,7 +129,7 @@ public class FCMRegistrationIntentService extends IntentService {
         LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
     }
 
-    private void enablePushOnChannel(String regId,String channelName) {
+    private void enablePushOnChannel(String regId, String channelName) {
         //adding regId to pubnub channel
         mPubnub.addPushNotificationsOnChannels()
                 .pushType(PNPushType.GCM)
@@ -153,7 +148,7 @@ public class FCMRegistrationIntentService extends IntentService {
 
     }
 
-    private void disablePushOnChannel(String regId,String channelName){
+    private void disablePushOnChannel(String regId, String channelName) {
         //removing regId to pubnub channel
         mPubnub.removePushNotificationsFromChannels()
                 .deviceId(regId)
